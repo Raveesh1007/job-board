@@ -323,9 +323,56 @@ async function seedJobs() {
   }
 }
 
+
+const communities = [
+  {
+    id: '1',
+    name: 'Software Engineers',
+    description: 'A community for software engineers to share knowledge and opportunities.',
+  },
+  {
+    id: '2',
+    name: 'Data Scientists',
+    description: 'Discuss data analysis, machine learning, and AI trends.',
+  },
+  {
+    id: '3',
+    name: 'Product Managers',
+    description: 'Collaborate on product development strategies and best practices.',
+  },
+
+];
+
+async function seedCommunities() {
+  try {
+    await Promise.all(
+      communities.map(async (community) =>
+        prisma.community.upsert({
+          where: { id: community.id },
+          create: {
+            id: community.id,
+            name: community.name,
+            description: community.description,
+          },
+          update: {},
+        })
+      )
+    );
+    console.log('✅ Community seed successfully');
+  } catch (error) {
+    console.error('Error seeding communities:', error);
+    process.exit(1);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+
+
 async function main() {
   await seedUsers();
   await seedJobs();
+  await seedCommunities();
 }
 
 main();
